@@ -1,5 +1,10 @@
 package com.serve.dto;
 
-public record OwnerDTO(Long Id, String firstName, String lastName) {
+import lombok.Data;
 
+@Data
+public class OwnerDTO {
+    private Long id;
+    private String firstName;
+    private String lastName;
 }

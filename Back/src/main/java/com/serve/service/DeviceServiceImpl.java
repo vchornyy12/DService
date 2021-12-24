@@ -2,11 +2,13 @@
 package com.serve.service;
 
 import com.serve.dao.DeviceDAO;
-import com.serve.model.Device;
+import com.serve.dto.DeviceDTO;
+import com.serve.mapper.DeviceMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DeviceServiceImpl implements DeviceService {
@@ -19,8 +21,8 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     @Transactional
-    public Device create(Device device) {
-        return deviceDAO.create(device);
+    public DeviceDTO create(DeviceDTO deviceDTO) {
+        return DeviceMapper.INSTANCE.toDto(deviceDAO.create(DeviceMapper.INSTANCE.toEntity(deviceDTO)));
     }
 
     @Override
@@ -28,18 +30,15 @@ public class DeviceServiceImpl implements DeviceService {
 
     // TODO why not importing the class?
     @Transactional(readOnly = true)
-    public Device get(Long id) {
-        Device device = deviceDAO.get(id);
-        device.getOwner().getFirstName();
-        return device;
-       // return deviceDAO.get(id);
+    public DeviceDTO get(Long id) {
+        return DeviceMapper.INSTANCE.toDto(deviceDAO.get(id));
     }
 
     @Override
     @Transactional
-    public Device update(Device device) {
+    public DeviceDTO update(DeviceDTO deviceDTO) {
         // TODO the line above could be returned
-        return deviceDAO.update(device);
+        return DeviceMapper.INSTANCE.toDto(deviceDAO.update(DeviceMapper.INSTANCE.toEntity(deviceDTO)));
     }
 
     @Override
@@ -52,12 +51,9 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     // TODO why do you need a transaction here?
     @Transactional(readOnly = true)
-    public List<com.serve.model.Device> getAll() {
-        List<Device> devices = deviceDAO.getAll();
-        for(Device device : devices){
-            device.getOwner().getFirstName();
-        }
-        return devices;
+    public List<DeviceDTO> getAll() {
+
+        return deviceDAO.getAll().stream().map(DeviceMapper.INSTANCE::toDto).collect(Collectors.toList());
     }
 
 

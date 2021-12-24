@@ -1,6 +1,6 @@
 package com.serve.controller;
 
-import com.serve.model.Device;
+import com.serve.dto.DeviceDTO;
 import com.serve.service.DeviceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,22 +18,21 @@ public class DeviceController {
 
     //save
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody Device device) {
-        Device device1 = deviceService.create(device);
-        return ResponseEntity.ok().body("Device is created with id: " + device1.getId().toString());
+    public ResponseEntity<?> create(@RequestBody DeviceDTO deviceDTO) {
+        return ResponseEntity.ok().body(deviceService.create(deviceDTO));
     }
 
     //get
     @GetMapping("/{id}")
-    public ResponseEntity<Device> get(@PathVariable("id") Long id) {
-        Device device = deviceService.get(id);
-        return ResponseEntity.ok().body(device);
+    public ResponseEntity<DeviceDTO> get(@PathVariable("id") Long id) {
+        DeviceDTO deviceDTO = deviceService.get(id);
+        return ResponseEntity.ok().body(deviceDTO);
     }
 
     //update
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody Device device) {
-        deviceService.update(device);
+    public ResponseEntity<?> update(@RequestBody DeviceDTO deviceDTO) {
+        deviceService.update(deviceDTO);
         return ResponseEntity.ok().body("Device has been updated successfully!");
     }
 
@@ -46,8 +45,8 @@ public class DeviceController {
 
     //All list
     @GetMapping()
-    public ResponseEntity<List<Device>> getAll() {
-        List<Device> devices = deviceService.getAll();
+    public ResponseEntity<List<DeviceDTO>> getAll() {
+        List<DeviceDTO> devices = deviceService.getAll();
         return ResponseEntity.ok().body(devices);
     }
 }

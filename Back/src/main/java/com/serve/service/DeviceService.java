@@ -1,18 +1,18 @@
 package com.serve.service;
 
-import com.serve.model.Device;
+import com.serve.dto.DeviceDTO;
 
 import java.util.List;
 
 public interface DeviceService {
 
-    Device create(Device device);
+    DeviceDTO create(DeviceDTO deviceDTO);
 
-    Device get(Long id);
+    DeviceDTO get(Long id);
 
-    Device update(Device device);
+    DeviceDTO update(DeviceDTO deviceDTO);
 
     boolean delete(Long id);
 
-    List<Device> getAll();
+    List<DeviceDTO> getAll();
 }

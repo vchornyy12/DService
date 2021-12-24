@@ -2,7 +2,6 @@
 package com.serve.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.serve.model.enums.DeviceType;
 import com.serve.model.enums.Status;
 import lombok.Getter;
@@ -12,7 +11,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
 @Entity

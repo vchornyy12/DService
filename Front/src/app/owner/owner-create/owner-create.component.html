@@ -1,0 +1,30 @@
+<div class="card my-5">
+  <div class="card-body">
+    <form class="form" (ngSubmit)="onSubmit()" #ownerCreate="ngForm">
+      <div class="form-group">
+        <label for="name">First Name</label>
+        <input type="text" [(ngModel)]="owner.firstName"
+               class="form-control"
+               id="first"
+               name="name"
+               placeholder="Enter owner's first name"
+               >
+      </div>
+
+<!--      <div [hidden]="!name.pristine" class="alert alert-danger">First Name is required</div>-->
+      <div class="form-group">
+        <label for="name">Last Name</label>
+        <input type="text" [(ngModel)]="owner.lastName"
+               class="form-control"
+               id="name"
+               name="name"
+               placeholder="Enter owner's last name"
+               >
+<!--        <div [hidden]="!name.pristine" class="alert alert-danger">Last Name is required</div>-->
+      </div>
+
+      <button type="submit" [disabled]="!ownerCreate.form.valid"
+              class="btn btn-success">Add</button>
+    </form>
+  </div>
+</div>
