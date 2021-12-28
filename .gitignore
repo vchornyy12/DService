@@ -1,0 +1,8 @@
+# Project exclude paths
+Back/target/
+/.idea/
+Front/.vscode/
+Front/node_modules/
+Front/.angular
+# Project exclude paths
+/node_modules/

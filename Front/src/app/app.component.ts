@@ -9,6 +9,6 @@ export class AppComponent {
   title: string;
 
   constructor() {
-    this.title = 'GetServeApp';
+    this.title = 'Device Service';
   }
 }
