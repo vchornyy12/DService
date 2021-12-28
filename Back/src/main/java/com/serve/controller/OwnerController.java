@@ -1,6 +1,6 @@
 package com.serve.controller;
 
-import com.serve.model.Owner;
+import com.serve.dto.OwnerDTO;
 import com.serve.service.OwnerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,22 +18,22 @@ public class OwnerController {
 
     //create
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody Owner owner) {
-        Owner owner1 = ownerService.create(owner);
-        return ResponseEntity.ok().body("Owner is created with id: " + owner1.getId().toString());
+    public ResponseEntity<?> create(@RequestBody OwnerDTO ownerDTO) {
+        OwnerDTO ownerDTO1 = ownerService.create(ownerDTO);
+        return ResponseEntity.ok().body(ownerDTO1);
     }
 
     //get
     @GetMapping("/{id}")
-    public ResponseEntity<Owner> get(@PathVariable("id") Long id) {
-        Owner owner = ownerService.get(id);
-        return ResponseEntity.ok().body(owner);
+    public ResponseEntity<OwnerDTO> get(@PathVariable("id") Long id) {
+        OwnerDTO ownerDTO = ownerService.get(id);
+        return ResponseEntity.ok().body(ownerDTO);
     }
 
     //update
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody Owner owner) {
-        ownerService.update(owner);
+    public ResponseEntity<?> update(@RequestBody OwnerDTO ownerDTO) {
+        ownerService.update(ownerDTO);
         return ResponseEntity.ok().body("Owner has been updated successfully!");
     }
 
@@ -46,8 +46,8 @@ public class OwnerController {
 
     //All list
     @GetMapping()
-    public ResponseEntity<List<Owner>> list() {
-        List<Owner> owners = ownerService.getAll();
+    public ResponseEntity<List<OwnerDTO>> getAll() {
+        List<OwnerDTO> owners = ownerService.getAll();
         return ResponseEntity.ok().body(owners);
     }
 

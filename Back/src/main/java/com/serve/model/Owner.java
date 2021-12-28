@@ -1,8 +1,6 @@
 // TODO format this class / optimize imports
 package com.serve.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +8,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
 @Entity
@@ -28,7 +25,6 @@ public class Owner implements Serializable {
     private String lastName;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<Device> devices;
 
 

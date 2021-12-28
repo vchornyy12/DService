@@ -7,12 +7,14 @@ import {DeviceComponent} from './device/device.component';
 import {OwnerComponent} from './owner/owner.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
+import { OwnerCreateComponent } from './owner/owner-create/owner-create.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DeviceComponent,
-    OwnerComponent
+    OwnerComponent,
+    OwnerCreateComponent
   ],
   imports: [
     BrowserModule,

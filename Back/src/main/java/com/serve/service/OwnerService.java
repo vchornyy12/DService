@@ -1,17 +1,17 @@
 package com.serve.service;
 
-import com.serve.model.Owner;
+import com.serve.dto.OwnerDTO;
 
 import java.util.List;
 
 public interface OwnerService {
-    Owner create(Owner owner);
+    OwnerDTO create(OwnerDTO ownerDTO);
 
-    Owner get(Long id);
+    OwnerDTO get(Long id);
 
-    Owner update(Owner owner);
+    OwnerDTO update(OwnerDTO ownerDTO);
 
     boolean delete(Long id);
 
-    List<Owner> getAll();
+    List<OwnerDTO> getAll();
 }
