@@ -2,23 +2,23 @@
   <div class="card-body">
     <form class="form" (ngSubmit)="onSubmit()" #ownerCreate="ngForm">
       <div class="form-group">
-        <label for="name">First Name</label>
-        <input type="text" [(ngModel)]="owner.firstName"
+        <label for="firstname">First Name</label>
+        <input type="text" required maxlength="30" minlength="3" [(ngModel)]="owner.firstName"
                class="form-control"
-               id="first"
-               name="name"
-               placeholder="Enter owner's first name"
+               id="firstname"
+               name="fname"
+               placeholder="Enter owner's first name (min 3 max 30 Symbols)"
                >
       </div>
 
 <!--      <div [hidden]="!name.pristine" class="alert alert-danger">First Name is required</div>-->
       <div class="form-group">
-        <label for="name">Last Name</label>
-        <input type="text" [(ngModel)]="owner.lastName"
+        <label for="lastname">Last Name</label>
+        <input type="text" required maxlength="30" minlength="3" [(ngModel)]="owner.lastName"
                class="form-control"
-               id="name"
-               name="name"
-               placeholder="Enter owner's last name"
+               id="lastname"
+               name="lname"
+               placeholder="Enter owner's last name (min 3 max 30 Symbols)"
                >
 <!--        <div [hidden]="!name.pristine" class="alert alert-danger">Last Name is required</div>-->
       </div>
