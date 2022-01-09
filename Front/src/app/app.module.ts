@@ -7,23 +7,24 @@ import {DeviceComponent} from './device/device.component';
 import {OwnerComponent} from './owner/owner.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
-import {OwnerCreateComponent} from './owner/owner-create/owner-create.component';
+import {OwnerService} from "./owner/owner.service";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
     AppComponent,
     DeviceComponent,
-    OwnerComponent,
-    OwnerCreateComponent,
+    OwnerComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule
   ],
-  providers: [],
+  providers: [OwnerService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -1,8 +1,10 @@
 package com.serve.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class OwnerDTO {
     private Long id;
     private String firstName;
