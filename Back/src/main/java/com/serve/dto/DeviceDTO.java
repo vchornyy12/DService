@@ -1,17 +1,19 @@
 package com.serve.dto;
 
+import com.serve.model.enums.DeviceType;
 import com.serve.model.enums.Status;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
 
 @Data
+@Getter
+@Setter
 public class DeviceDTO {
     private Long id;
-    private LocalDateTime registerDate;
-    private String deviceType;
+    private DeviceType deviceType;
     private String model;
     private String code;
     private Status status;
-    private String ownerDTO;
 }

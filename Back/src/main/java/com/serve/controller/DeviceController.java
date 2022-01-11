@@ -16,34 +16,37 @@ public class DeviceController {
         this.deviceService = deviceService;
     }
 
-    //save
+
     @PostMapping()
     public ResponseEntity<?> create(@RequestBody DeviceDTO deviceDTO) {
-        return ResponseEntity.ok().body(deviceService.create(deviceDTO));
+        DeviceDTO deviceDTO1 = deviceService.create(deviceDTO);
+        return ResponseEntity.ok().body(deviceDTO1);
     }
 
-    //get
+
     @GetMapping("/{id}")
     public ResponseEntity<DeviceDTO> get(@PathVariable("id") Long id) {
         DeviceDTO deviceDTO = deviceService.get(id);
         return ResponseEntity.ok().body(deviceDTO);
     }
 
-    //update
+
+    @CrossOrigin
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody DeviceDTO deviceDTO) {
         deviceService.update(deviceDTO);
-        return ResponseEntity.ok().body("Device has been updated successfully!");
+        return ResponseEntity.noContent().build();
     }
 
-    //del
+
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         deviceService.delete(id);
-        return ResponseEntity.ok().body("Device has been deleted successfully!");
+        return ResponseEntity.noContent().build();
     }
 
-    //All list
+
     @GetMapping()
     public ResponseEntity<List<DeviceDTO>> getAll() {
         List<DeviceDTO> devices = deviceService.getAll();

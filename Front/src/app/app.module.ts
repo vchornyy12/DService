@@ -9,12 +9,15 @@ import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import {OwnerService} from "./owner/owner.service";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { SortDirective } from './directive/sort.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     DeviceComponent,
-    OwnerComponent
+    OwnerComponent,
+    SortDirective
   ],
   imports: [
     BrowserModule,
@@ -22,7 +25,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbModule
+    NgbModule,
+    NgxPaginationModule
   ],
   providers: [OwnerService],
   bootstrap: [AppComponent]

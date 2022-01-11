@@ -27,17 +27,17 @@ public class Device {
     private LocalDateTime registerDate;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "type", length = 128)
-    private DeviceType deviseType;
+    @Column(name = "type", length = 30)
+    private DeviceType deviceType;
 
-    @Column(name = "model", length = 128, nullable = false)
+    @Column(name = "model", length = 30)
     private String model;
 
-    @Column(name = "device_code", length = 128)
+    @Column(name = "device_code", length = 30)
     private String code;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "devise_status", length = 128)
+    @Column(name = "device_status", length = 30)
     private Status status;
 
     // TODO Avoid FetchType.EAGER
