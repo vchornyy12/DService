@@ -1,23 +1,28 @@
 import {Component, OnInit} from '@angular/core';
-import {Owner} from './owner'
+import {Owner} from './owner';
 import {OwnerService} from "./owner.service";
-import {FormBuilder, FormGroup, NgForm} from "@angular/forms";
+import {FormBuilder, FormGroup, NgForm, Validators} from "@angular/forms";
 import {ModalDismissReasons, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {HttpClient} from "@angular/common/http";
+
 
 @Component({
   selector: 'owner',
   templateUrl: './owner.component.html',
   styleUrls: ['./owner.component.css']
 })
-export class OwnerComponent implements OnInit {
+export class OwnerComponent implements OnInit{
+
   public owners: Owner[] = [];
   closeResult: string | undefined;
   editForm!: FormGroup;
-  private ownerId: number | undefined;
+  public ownerId: number | undefined;
+  sortedData: Owner[];
+  ownersUrl = 'http://localhost:8080/owners/';
 
   constructor(private ownerService: OwnerService, private modalService: NgbModal,
               private fb: FormBuilder, private httpClient: HttpClient) {
+    this.sortedData = this.owners.slice();
   }
 
   ngOnInit(): void {
@@ -28,15 +33,34 @@ export class OwnerComponent implements OnInit {
       lastName: ['']
     })
   }
+  public getValidation(): void {
+    this.editForm = this.fb.group(
+      {
+        firstName: [
+          '',
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(20)],
+        lastName: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(3),
+            Validators.maxLength(20)
+          ]
+        ]
+      }
+    );
+  }
 
-  private getAllOwners() {
+  public getAllOwners() {
     this.ownerService.getAllOwners().subscribe(data => {
         this.owners = data;
       }
     )
   }
 
-  open(content: any) {
+ public open(content: any) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -44,7 +68,7 @@ export class OwnerComponent implements OnInit {
     });
   }
 
-  private getDismissReason(reason: any): string {
+  public getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
@@ -54,7 +78,7 @@ export class OwnerComponent implements OnInit {
     }
   }
 
-  onSubmit(f: NgForm) {
+  public onSubmit(f: NgForm) {
     this.ownerService.createOwner(f.value)
       .subscribe((result) => {
         this.ngOnInit();
@@ -62,7 +86,7 @@ export class OwnerComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
-  openEdit(targetModal: any, owner: Owner) {
+  public openEdit(targetModal: any, owner: Owner) {
     this.ownerId = owner.id;
     this.modalService.open(targetModal, {
       backdrop: 'static',
@@ -75,8 +99,8 @@ export class OwnerComponent implements OnInit {
     });
   }
 
-  onSave() {
-    const editURL = 'http://localhost:8080/owners/' + this.ownerId;
+ public onSave() {
+    const editURL = this.ownersUrl + this.ownerId;
     this.httpClient.put(editURL, this.editForm.value)
       .subscribe((results) => {
         this.ngOnInit();
@@ -85,7 +109,7 @@ export class OwnerComponent implements OnInit {
     this.ngOnInit();
   }
 
-  openDelete(targetModal: any, owner: Owner) {
+  public openDelete(targetModal: any, owner: Owner) {
     this.ownerId = owner.id;
     this.modalService.open(targetModal, {
       backdrop: 'static',
@@ -93,8 +117,8 @@ export class OwnerComponent implements OnInit {
     });
   }
 
-  onDelete() {
-    const deleteURL = 'http://localhost:8080/owners/' + this.ownerId;
+ public onDelete() {
+    const deleteURL = this.ownersUrl + this.ownerId;
     this.httpClient.delete(deleteURL)
       .subscribe((results) => {
         this.owners = this.owners.filter(obj => obj.id !== this.ownerId);

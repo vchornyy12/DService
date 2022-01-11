@@ -16,21 +16,21 @@ public class OwnerController {
         this.ownerService = ownerService;
     }
 
-    //create
+
     @PostMapping()
     public ResponseEntity<?> create(@RequestBody OwnerDTO ownerDTO) {
         OwnerDTO ownerDTO1 = ownerService.create(ownerDTO);
         return ResponseEntity.ok().body(ownerDTO1);
     }
 
-    //get
+
     @GetMapping("/{id}")
     public ResponseEntity<OwnerDTO> get(@PathVariable("id") Long id) {
         OwnerDTO ownerDTO = ownerService.get(id);
         return ResponseEntity.ok().body(ownerDTO);
     }
 
-    //update
+
     @CrossOrigin
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody OwnerDTO ownerDTO) {
@@ -38,7 +38,7 @@ public class OwnerController {
         return ResponseEntity.noContent().build();
     }
 
-    //del
+
     @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
@@ -46,7 +46,7 @@ public class OwnerController {
         return ResponseEntity.noContent().build();
     }
 
-    //All list
+
     @GetMapping()
     public ResponseEntity<List<OwnerDTO>> getAll() {
         List<OwnerDTO> owners = ownerService.getAll();
