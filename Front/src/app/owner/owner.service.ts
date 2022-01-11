@@ -13,11 +13,13 @@ export class OwnerService {
     this.ownersUrl = 'http://localhost:8080/owners';
   }
 
-  public getAll(): Observable<Owner[]> {
+  public getAllOwners(): Observable<Owner[]> {
     return this.http.get<Owner[]>(this.ownersUrl);
   }
-  public create(owner: Owner) {
+
+  public createOwner(owner: Owner) {
     return this.http.post<Owner>(this.ownersUrl, owner);
   }
 }
+
 

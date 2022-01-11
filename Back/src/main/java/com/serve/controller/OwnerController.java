@@ -31,17 +31,19 @@ public class OwnerController {
     }
 
     //update
+    @CrossOrigin
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody OwnerDTO ownerDTO) {
         ownerService.update(ownerDTO);
-        return ResponseEntity.ok().body("Owner has been updated successfully!");
+        return ResponseEntity.noContent().build();
     }
 
     //del
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         ownerService.delete(id);
-        return ResponseEntity.ok().body("Owner has been deleted successfully!");
+        return ResponseEntity.noContent().build();
     }
 
     //All list
