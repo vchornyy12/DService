@@ -1,5 +1,7 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 
+@import "~bootstrap/dist/css/bootstrap.css";
+
 .border {
   padding: 10px;
 }
@@ -15,4 +17,13 @@
 table .btn {
   margin: 2px;
 }
+em{
+  color: #e71515;
+  font-weight: normal;
+}
+
+.ng-invalid.ng-touched{
+  border-color: red;
+}
+
 
