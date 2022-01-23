@@ -16,4 +16,5 @@ public class DeviceDTO {
     private String model;
     private String code;
     private Status status;
+    private OwnerDTO owner;
 }

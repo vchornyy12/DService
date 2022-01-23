@@ -1,11 +1,15 @@
 package com.serve.controller;
 
 import com.serve.dto.DeviceDTO;
+import com.serve.model.enums.DeviceType;
+import com.serve.model.enums.Status;
 import com.serve.service.DeviceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/devices")
@@ -19,8 +23,7 @@ public class DeviceController {
 
     @PostMapping()
     public ResponseEntity<?> create(@RequestBody DeviceDTO deviceDTO) {
-        DeviceDTO deviceDTO1 = deviceService.create(deviceDTO);
-        return ResponseEntity.ok().body(deviceDTO1);
+        return ResponseEntity.ok().body(deviceService.create(deviceDTO));
     }
 
 
@@ -31,7 +34,6 @@ public class DeviceController {
     }
 
 
-    @CrossOrigin
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody DeviceDTO deviceDTO) {
         deviceService.update(deviceDTO);
@@ -39,7 +41,6 @@ public class DeviceController {
     }
 
 
-    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         deviceService.delete(id);
@@ -52,4 +53,18 @@ public class DeviceController {
         List<DeviceDTO> devices = deviceService.getAll();
         return ResponseEntity.ok().body(devices);
     }
+
+    @GetMapping("/devicetypes")
+    public ResponseEntity<List<String>> getAllDeviceTypes() {
+        List<String> deviceTypes = Arrays.stream(DeviceType.values()).map(value -> value.toString()).collect(Collectors.toList());
+        return ResponseEntity.ok().body(deviceTypes);
+    }
+
+    @GetMapping("/statuses")
+    public ResponseEntity<List<String>> getAllDeviceStatuses() {
+        List<String> deviceStatuses = Arrays.stream(Status.values()).map(value -> value.toString()).collect(Collectors.toList());
+        return ResponseEntity.ok().body(deviceStatuses);
+    }
+
+
 }

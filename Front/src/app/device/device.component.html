@@ -1,147 +1,195 @@
 <div class="border">
-  <button (click)="open(content)" class="btn btn-md btn-outline-success">
-    <i class="fa fa-user"></i>New Device
-  </button>
+    <button (click)="open(content)" class="btn btn-md btn-outline-success">
+        <i class="fa fa-user"></i>New Device
+    </button>
 </div>
 <div class="card my-5">
-  <div class="card-body">
-    <table class="table table-light table-striped table-hover">
-      <thead class="thead">
-      <tr>
-        <th scope="col" [appSort]="devices" data-order="desc" data-name="deviceType" >DEVICE TYPE</th>
-        <th scope="col" [appSort]="devices" data-order="desc" data-name="model" >MODEL</th>
-        <th scope="col" [appSort]="devices" data-order="desc" data-name="code">SERIAL NUMBER</th>
-        <th scope="col" [appSort]="devices" data-order="desc" data-name="status">STATUS</th>
-        <th scope="col" [appSort]="devices" data-order="desc" data-name="model" class="text-end">ACTIONS</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let device of devices">
-        <td>{{ device.deviceType }}</td>
-        <td>{{ device.model }}</td>
-        <td>{{ device.code }}</td>
-        <td>{{ device.status }}</td>
-        <td class="text-end">
-          <button (click)="openEdit(contentEdit, device)" class="btn btn-outline-primary btn-sm">Edit</button>
-          &nbsp;|&nbsp;
-          <button (click)="openDelete(contentDelete, device)" class="btn btn-outline-danger btn-sm">Delete</button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="card-body">
+        <table class="table table-light table-striped table-hover">
+            <thead class="thead">
+            <tr>
+                <th scope="col" [appSort]="devices" data-order="desc" data-name="deviceType">
+                    DEVICE TYPE
+                </th>
+                <th scope="col" [appSort]="devices" data-order="desc" data-name="model">MODEL</th>
+                <th scope="col" [appSort]="devices" data-order="desc" data-name="code">SERIAL NUMBER</th>
+                <th scope="col" [appSort]="devices" data-order="desc" data-name="status">STATUS</th>
+                <th scope="col" [appSort]="devices" data-order="desc" data-name="model" class="text-end">ACTIONS</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let device of devices">
+                <td>{{ device.deviceType }}</td>
+                <td>{{ device.model }}</td>
+                <td>{{ device.code }}</td>
+                <td>{{ device.status }}</td>
+                <td class="text-end">
+                    <button (click)="openEdit(contentEdit, device)" class="btn btn-outline-primary btn-sm">Edit</button>
+                    &nbsp;|&nbsp;
+                    <button (click)="openDelete(contentDelete, device)" class="btn btn-outline-danger btn-sm">Delete
+                    </button>
+                </td>
+            </tr>
+            <tr *ngIf="devices && devices.length == 0">
+                <td colspan="5">No records found!</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 <ng-template #content let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Add Device</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <form #f="ngForm" (ngSubmit)="onSubmit(f)">
-      <div class="form-group">
-        <label>Device Type</label>
-        <div class="input-group">
-          <input class="form-control"
-                 name="DeviceType"
-                 #firstname="ngModel"
-                 ngModel=""
-                 required minlength="2" maxlength="10"
-                 placeholder="Choose device type">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="DeviceModel">Device Model</label>
-        <div class="input-group">
-          <input ngModel="" required minlength="3" maxlength="30" id="DeviceModel" name="DeviceModel" class="form-control"
-                 placeholder="Enter device model">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="SerialNumber">Serial number</label>
-        <div class="input-group">
-          <input ngModel="" required minlength="3" maxlength="15" id="SerialNumber" name="SerialNumber" class="form-control"
-                 placeholder="Enter device serial number">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="DeviceStatus">Device Status</label>
-        <div class="input-group">
-          <input ngModel="" required minlength="3" maxlength="10" id="DeviceStatus" name="DeviceStatus" class="form-control"
-                 placeholder="Enter device status">
-        </div>
-
-      </div>
-    </form>
-  </div>
-  <div class="modal-body">
-
-    <div class="border text-center">
-      <button type="submit" [disabled]="!f.form.valid" data-dismiss="modal" class="btn btn-outline-success"
-              (click)="onSubmit(f)">Add
-      </button>
-      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Cancel click')">Cancel</button>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Add Device</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-  </div>
+    <div class="modal-body">
+        <form [formGroup]="deviceForm" novalidate>
+            <div class="form-group">
+                <label>DEVICE TYPE</label>
+                <div class="input-group">
+                    <select class="custom-select" [formControl]="deviceType" formControlName="deviceType">
+                        <option value="">Choose device type</option>
+                        <option *ngFor="let deviceType of DeviceTypes"
+                                [ngValue]="" >{{deviceType.toString()}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>MODEL</label>
+                <div class="input-group">
+                    <input required maxlength="30" formControlName="model" class="form-control">
+                </div>
+                <div class="col-md-5">
+                    <em *ngIf="validateControl('model') && hasError('model', 'required')">Model name is required</em>
+                    <em *ngIf="validateControl('model') && hasError('model', 'maxlength')">Maximum allowed length is 30
+                        characters.</em>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>SERIAL NUMBER</label>
+                <div class="input-group">
+                    <input formControlName="code" class="form-control">
+                </div>
+                    <em *ngIf="deviceForm.controls['code'].invalid">{{getDeviceCodeErrorMessage()}}</em>
+            </div>
+            <div class="form-group">
+                <label>STATUS</label>
+                <div class="input-group">
+                    <select class="custom-select" [formControl]="status" formControlName="status">
+                        <option value="">Choose device status</option>
+                        <option *ngFor="let status of Statuses"
+                                [ngValue]="">{{status.toString()}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>OWNER</label>
+                <div class="input-group">
+                    <select class="custom-select" [formControl]="owner" formControlName="owner">
+                        <option value="">Choose device owner</option>
+                        <option *ngFor="let owner of Owners"
+                               value="" [ngValue]="owner">{{owner.firstName}} {{owner.lastName}}</option>
+                        <div *ngIf="owner.invalid && (owner.dirty || owner.touched)"
+                             class="alert alert-danger">
+                            <div *ngIf="owner.errors?.['required']">
+                                Owner is required.
+                            </div>
+                        </div>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-body">
+
+        <div class="border text-center">
+            <button type="submit" [disabled]="!deviceForm.valid" data-dismiss="modal" class="btn btn-outline-success"
+                    (click)="onSubmit()">Add
+            </button>
+            <button type="button" class="btn btn-outline-dark" (click)="modal.close('Cancel click')">Cancel</button>
+        </div>
+    </div>
 </ng-template>
 
 <ng-template #contentEdit let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title2">Edit device's data</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <form [formGroup]="editForm" novalidate>
-      <div class="form-group">
-        <label>DEVICE TYPE</label>
-        <div class="input-group">
-          <input required minlength="2" maxlength="10" formControlName="deviceType" class="form-control">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="DeviceModel">MODEL</label>
-        <div class="input-group">
-          <input required minlength="3" maxlength="30" formControlName="model" class="form-control">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="DeviceModel">SERIAL NUMBER</label>
-        <div class="input-group">
-          <input required minlength="3" maxlength="15" formControlName="code" class="form-control">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="DeviceModel">STATUS</label>
-        <div class="input-group">
-          <input required minlength="3" maxlength="10" formControlName="status" class="form-control">
-        </div>
-      </div>
-      <div class="border text-center">
-        <button data-dismiss="modal" class="btn btn-outline-success" (click)="onSave()" [disabled]="!editForm.valid">
-          Save Changes
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title2">Edit device's data</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
         </button>
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Cancel</button>
-      </div>
-    </form>
-  </div>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="deviceForm" novalidate>
+            <div class="form-group">
+                <label>DEVICE TYPE</label>
+                <div class="input-group">
+                    <select class="custom-select" [formControl]="deviceType" formControlName="deviceType">
+                        <option value="bold">Edit device type</option>
+                        <option *ngFor="let deviceType of DeviceTypes"
+                                [ngValue]="deviceType.toString()">{{deviceType.toString()}}</option>
+                    </select>
+                    <!--                <input required minlength="2" maxlength="10" formControlName="deviceType" class="form-control">-->
+                </div>
+            </div>
+            <div class="form-group">
+                <label>MODEL</label>
+                <div class="input-group">
+                    <input required minlength="3" maxlength="30" formControlName="model" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>SERIAL NUMBER</label>
+                <div class="input-group">
+                    <input formControlName="code" class="form-control">
+                </div>
+                <em *ngIf="deviceForm.controls['code'].invalid">{{getDeviceCodeErrorMessage()}}</em>
+            </div>
+            <div class="form-group">
+                <label>STATUS</label>
+                <div class="input-group">
+                    <select class="custom-select" [formControl]="status" formControlName="status">
+                        <option value="">Edit device status</option>
+                        <option *ngFor="let status of Statuses"
+                                [ngValue]="status.toString()">{{status.toString()}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>OWNER</label>
+                <div class="input-group">
+                    <select class="custom-select" [formControl]="owner" formControlName="owner">
+                        <option value="">Edit device owner</option>
+                        <option *ngFor="let owner of Owners"
+                                [ngValue]="owner">{{owner.firstName}} {{owner.lastName}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="border text-center">
+                <button data-dismiss="modal" class="btn btn-outline-success" (click)="onSave()"
+                        [disabled]="!deviceForm.valid||deviceForm.controls['code'].invalid">
+                    Save Changes
+                </button>
+                <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Cancel</button>
+            </div>
+        </form>
+    </div>
 </ng-template>
 
 <ng-template #contentDelete let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title">Confirm Delete</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <h5 class="alert-danger">Are you sure to delete the device?</h5>
-    <div class="border text-center">
-      <button data-dismiss="modal" class="btn btn-danger" (click)="onDelete()">Yes</button>
-      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Cancel</button>
+    <div class="modal-header">
+        <h4 class="modal-title">Confirm Delete</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-  </div>
+    <div class="modal-body">
+        <h5 class="alert-danger">Are you sure to delete the device?</h5>
+        <div class="border text-center">
+            <button data-dismiss="modal" class="btn btn-danger" (click)="onDelete()">Yes</button>
+            <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Cancel</button>
+        </div>
+    </div>
 </ng-template>
 
