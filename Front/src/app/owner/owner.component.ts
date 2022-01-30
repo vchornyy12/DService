@@ -1,9 +1,13 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {Owner} from './owner';
 import {OwnerService} from "./owner.service";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ModalDismissReasons, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {HttpClient} from "@angular/common/http";
+import {MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort, Sort} from "@angular/material/sort";
+import {LiveAnnouncer} from "@angular/cdk/a11y";
 
 
 @Component({
@@ -11,18 +15,21 @@ import {HttpClient} from "@angular/common/http";
     templateUrl: './owner.component.html',
     styleUrls: ['./owner.component.css']
 })
-export class OwnerComponent implements OnInit {
+export class OwnerComponent implements OnInit, AfterViewInit {
 
     public owners: Owner[] = [];
     closeResult: string | undefined;
     ownerForm!: FormGroup;
     public ownerId: number | undefined;
-    sortedData: Owner[];
     ownersUrl = 'http://localhost:8080/owners/';
+    displayedColumns: string[] = ['firstName', 'lastName', 'actions'];
+    dataSource = new MatTableDataSource<Owner>();
+
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatSort) sort!: MatSort;
 
     constructor(private ownerService: OwnerService, private modalService: NgbModal,
-                private fb: FormBuilder, private httpClient: HttpClient) {
-        this.sortedData = this.owners.slice();
+                private fb: FormBuilder, private httpClient: HttpClient, private _liveAnnouncer: LiveAnnouncer) {
     }
 
     ngOnInit(): void {
@@ -34,26 +41,47 @@ export class OwnerComponent implements OnInit {
         })
     }
 
-    public validateControl = (controlName: string) => {
-        return this.ownerForm.controls[controlName].invalid && this.ownerForm.controls[controlName].touched;
-
-
+    ngAfterViewInit(): void {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
     }
 
-    public hasError = (controlName: string, errorName: string) => {
-        return this.ownerForm.controls[controlName].hasError(errorName);
+    applyFilter(event: Event): void {
+        const filterValue = (event.target as HTMLInputElement).value;
+        this.dataSource.filter = filterValue.trim().toLowerCase();
 
-
+        if (this.dataSource.paginator) {
+            this.dataSource.paginator.firstPage();
+        }
     }
 
-    public getAllOwners() {
+    announceSortChange(sortState: Sort): void {
+
+        if (sortState.direction) {
+            this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+        } else {
+            this._liveAnnouncer.announce('Sorting cleared');
+        }
+    }
+
+    public getAllOwners(): void {
         this.ownerService.getAllOwners().subscribe(data => {
                 this.owners = data;
+                this.dataSource.data = data;
             }
         )
     }
 
-    public open(content: any) {
+    public validateControl = (controlName: string) => {
+        return this.ownerForm.controls[controlName].invalid && this.ownerForm.controls[controlName].touched;
+    }
+
+    public hasError = (controlName: string, errorName: string) => {
+        return this.ownerForm.controls[controlName].hasError(errorName);
+    }
+
+
+    public open(content: any): void {
         this.ownerForm.reset();
         this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
             this.closeResult = `Closed with: ${result}`;
@@ -63,7 +91,7 @@ export class OwnerComponent implements OnInit {
         });
     }
 
-    public getDismissReason(reason: any): string {
+    public getDismissReason(reason: unknown): string {
         if (reason === ModalDismissReasons.ESC) {
             return 'by pressing ESC';
         } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
@@ -73,16 +101,25 @@ export class OwnerComponent implements OnInit {
         }
     }
 
-    public onSubmit() {
+    public onSubmit(): void {
         this.ownerService.createOwner(this.ownerForm.value)
             .subscribe((result) => {
                 this.owners.push(result);
                 this.ownerForm.reset();
+                this.dataSource.data = [...this.owners];
             });
         this.modalService.dismissAll();
     }
 
-    public openEdit(targetModal: any, owner: Owner) {
+    public openModal(targetModal: any, owner: Owner): void {
+        this.ownerId = owner.id;
+        this.modalService.open(targetModal, {
+            backdrop: 'static',
+            size: 'lg'
+        });
+    }
+
+    public openEdit(targetModal: any, owner: Owner): void {
         this.ownerId = owner.id;
         this.modalService.open(targetModal, {
             backdrop: 'static',
@@ -95,17 +132,18 @@ export class OwnerComponent implements OnInit {
         });
     }
 
-    public onSave() {
+    public onSave(): void {
         const editURL = this.ownersUrl + this.ownerId;
         this.httpClient.put(editURL, this.ownerForm.value)
             .subscribe(() => {
-                this.ngOnInit();
+                this.getAllOwners();
                 this.ownerForm.reset();
+                this.dataSource.data = [...this.dataSource.data];
             });
         this.modalService.dismissAll();
     }
 
-    public openDelete(targetModal: any, owner: Owner) {
+    public openDelete(targetModal: any, owner: Owner): void {
         this.ownerId = owner.id;
         this.modalService.open(targetModal, {
             backdrop: 'static',
@@ -113,11 +151,12 @@ export class OwnerComponent implements OnInit {
         });
     }
 
-    public onDelete() {
+    public onDelete(): void {
         const deleteURL = this.ownersUrl + this.ownerId;
         this.httpClient.delete(deleteURL)
             .subscribe(() => {
                 this.owners = this.owners.filter(obj => obj.id !== this.ownerId);
+                this.dataSource.data = [...this.owners];
             });
         this.modalService.dismissAll();
     }

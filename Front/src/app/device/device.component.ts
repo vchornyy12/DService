@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {Device} from './device';
 import {DeviceService} from "./device.service";
 import {
@@ -14,6 +14,10 @@ import {ModalDismissReasons, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Owner} from "../owner/owner";
 import {OwnerService} from "../owner/owner.service";
+import {MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort, Sort} from "@angular/material/sort";
+import {LiveAnnouncer} from "@angular/cdk/a11y";
 
 
 export function uniqueValidator(): ValidatorFn {
@@ -27,23 +31,31 @@ export function uniqueValidator(): ValidatorFn {
     templateUrl: './device.component.html',
     styleUrls: ['./device.component.css']
 })
-export class DeviceComponent implements OnInit {
+export class DeviceComponent implements OnInit, AfterViewInit {
+
     public devices: Device[] = [];
-    closeResult: string | undefined;
+    public Statuses: string[] = [];
+    public DeviceTypes: string[] = [];
+    public Owners: Owner[] = [];
+    closeResult!: string;
     deviceForm!: FormGroup;
-    public deviceId: number | undefined;
+    public deviceId!: number;
     owner = new FormControl('', [Validators.required]);
     code: any = new FormControl('', [Validators.required, Validators.maxLength(16), uniqueValidator]);
     private readonly deviceUrl = 'http://localhost:8080/devices/';
-    Statuses: string[] = [];
+
     status: any = new FormControl('', [Validators.required]);
     deviceType: any = new FormControl('', [Validators.required]);
-    DeviceTypes: string[] = [];
-    public Owners: Owner[] = [];
+
+    displayedColumns: string[] = ['deviceType', 'model', 'code', 'status', 'owner.firstName', 'action'];
+    dataSource = new MatTableDataSource<Device>();
+
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatSort) sort!: MatSort;
 
 
     constructor(private deviceService: DeviceService, private modalService: NgbModal,
-                private fb: FormBuilder, private httpClient: HttpClient, private ownerService: OwnerService) {
+                private fb: FormBuilder, private httpClient: HttpClient, private ownerService: OwnerService, private _liveAnnouncer: LiveAnnouncer) {
 
     }
 
@@ -60,6 +72,29 @@ export class DeviceComponent implements OnInit {
             status: this.status,
             owner: this.owner
         })
+    }
+
+    ngAfterViewInit(): void {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+    }
+
+    applyFilter(event: Event): void {
+        const filterValue = (event.target as HTMLInputElement).value;
+        this.dataSource.filter = filterValue.trim().toLowerCase();
+
+        if (this.dataSource.paginator) {
+            this.dataSource.paginator.firstPage();
+        }
+    }
+
+    announceSortChange(sortState: Sort): void {
+
+        if (sortState.direction) {
+            this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+        } else {
+            this._liveAnnouncer.announce('Sorting cleared');
+        }
     }
 
     public validateControl = (controlName: string) => {
@@ -86,9 +121,10 @@ export class DeviceComponent implements OnInit {
             this.Statuses = response);
     }
 
-    private getAllDevices() {
+    private getAllDevices(): void {
         this.deviceService.getAllDevices().subscribe(result => {
                 this.devices = result;
+                this.dataSource.data = result;
             }
         )
     }
@@ -106,7 +142,7 @@ export class DeviceComponent implements OnInit {
         }
     }
 
-    public open(content: any) {
+    public open(content: unknown): void {
         this.deviceForm.reset();
         this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
             this.closeResult = `Closed with: ${result}`;
@@ -115,7 +151,7 @@ export class DeviceComponent implements OnInit {
         });
     }
 
-    private getDismissReason(reason: any): string {
+    private getDismissReason(reason: unknown): string {
         if (reason === ModalDismissReasons.ESC) {
             return 'by pressing ESC';
         } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
@@ -125,13 +161,14 @@ export class DeviceComponent implements OnInit {
         }
     }
 
-    public onSubmit() {
+    public onSubmit(): void {
         this.deviceService.createDevice(this.deviceForm.value)
             .subscribe({
                 next: (response) => {
                     this.devices.push(response);
                     this.deviceForm.reset();
                     this.modalService.dismissAll();
+                    this.dataSource.data = [...this.devices];
                 },
                 error: (err: HttpErrorResponse) => {
                     if (err.status == 409) {
@@ -143,7 +180,7 @@ export class DeviceComponent implements OnInit {
 
     }
 
-    public openEdit(targetModal: any, device: Device) {
+    public openEdit(targetModal: unknown, device: Device): void {
         this.deviceId = device.id;
         this.modalService.open(targetModal, {
             backdrop: 'static',
@@ -160,14 +197,15 @@ export class DeviceComponent implements OnInit {
 
     }
 
-    public onSave() {
+    public onSave(): void {
         const editURL = this.deviceUrl + this.deviceId;
         this.httpClient.put(editURL, this.deviceForm.value)
             .subscribe({
-                next: (response) => {
-                    this.ngOnInit();
+                next: () => {
+                    this.getAllDevices();
                     this.deviceForm.reset();
                     this.modalService.dismissAll();
+                    this.dataSource.data = [...this.dataSource.data];
                 },
 
                 error: (err: HttpErrorResponse) => {
@@ -180,7 +218,7 @@ export class DeviceComponent implements OnInit {
 
     }
 
-    public openDelete(targetModal: any, device: Device) {
+    public openDelete(targetModal: unknown, device: Device): void {
         this.deviceId = device.id;
         this.modalService.open(targetModal, {
             backdrop: 'static',
@@ -188,11 +226,12 @@ export class DeviceComponent implements OnInit {
         });
     }
 
-    public onDelete() {
+    public onDelete(): void {
         const deleteURL = this.deviceUrl + this.deviceId;
         this.httpClient.delete(deleteURL)
             .subscribe(() => {
                 this.devices = this.devices.filter(obj => obj.id !== this.deviceId);
+                this.dataSource.data = [...this.devices];
             });
         this.modalService.dismissAll();
     }
