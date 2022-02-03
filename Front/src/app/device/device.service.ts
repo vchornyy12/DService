@@ -10,6 +10,8 @@ import {HttpClient} from '@angular/common/http';
 export class DeviceService {
 
   private readonly deviceUrl: string;
+  private readonly deviceTypeUrl: string = 'http://localhost:8080/devices/devicetypes';
+  private readonly deviceStatusUrl: string = 'http://localhost:8080/devices/statuses';
 
   constructor(private http: HttpClient) {
     this.deviceUrl = 'http://localhost:8080/devices';
@@ -21,4 +23,14 @@ export class DeviceService {
   public createDevice(device: Device) {
     return this.http.post<Device>(this.deviceUrl, device);
   }
+
+  public getDeviceTypes(): Observable<string[]> {
+    return this.http.get<string[]>(this.deviceTypeUrl);
+  }
+
+  public getDeviceStatuses(): Observable<string[]> {
+    return this.http.get<string[]>(this.deviceStatusUrl);
+  }
+
+
 }

@@ -4,6 +4,7 @@ import { Sort } from '../util/sort';
 
 @Directive({
   selector: '[appSort]'
+
 })
 export class SortDirective {
 
