@@ -1,12 +1,14 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 
-@import "~bootstrap/dist/css/bootstrap.css";
-
 .border {
   padding: 10px;
 }
 
 .btn {
+  margin-right: 10px;
+}
+
+.btn1 {
   margin-right: 10px;
 }
 
@@ -25,26 +27,14 @@ em{
 .ng-invalid.ng-touched{
   border-color: red;
 }
-
-/*This class displays the UP arrow*/
-.arrow-up {
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 10px solid black;
-  display:inline-block;
+table {
+  width: 100%;
+}
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
 }
 
-/*This class displays the DOWN arrow*/
-.arrow-down {
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 10px solid black;
-  display:inline-block;
+td, th {
+  width: 25%;
 }
-
-
-

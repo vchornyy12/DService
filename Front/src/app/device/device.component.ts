@@ -59,7 +59,7 @@ export class DeviceComponent implements OnInit, AfterViewInit {
 
     }
 
-    ngOnInit(): void {
+   public ngOnInit(): void {
         this.getAllDevices();
         this.getDeviceTypes();
         this.getDeviceStatuses();
@@ -74,12 +74,12 @@ export class DeviceComponent implements OnInit, AfterViewInit {
         })
     }
 
-    ngAfterViewInit(): void {
+   public ngAfterViewInit(): void {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
     }
 
-    applyFilter(event: Event): void {
+   public applyFilter(event: Event): void {
         const filterValue = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();
 
@@ -88,7 +88,7 @@ export class DeviceComponent implements OnInit, AfterViewInit {
         }
     }
 
-    announceSortChange(sortState: Sort): void {
+   public announceSortChange(sortState: Sort): void {
 
         if (sortState.direction) {
             this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
@@ -129,8 +129,7 @@ export class DeviceComponent implements OnInit, AfterViewInit {
         )
     }
 
-    // @ts-ignore
-    public getDeviceCodeErrorMessage(): string {
+    public getDeviceCodeErrorMessage(): any {
         if (this.code.hasError('required')) {
             return 'Device code can not be empty';
         }
@@ -198,8 +197,7 @@ export class DeviceComponent implements OnInit, AfterViewInit {
     }
 
     public onSave(): void {
-        const editURL = this.deviceUrl + this.deviceId;
-        this.httpClient.put(editURL, this.deviceForm.value)
+        this.httpClient.put(this.deviceUrl + this.deviceId, this.deviceForm.value)
             .subscribe({
                 next: () => {
                     this.getAllDevices();
@@ -227,8 +225,7 @@ export class DeviceComponent implements OnInit, AfterViewInit {
     }
 
     public onDelete(): void {
-        const deleteURL = this.deviceUrl + this.deviceId;
-        this.httpClient.delete(deleteURL)
+        this.httpClient.delete(this.deviceUrl + this.deviceId)
             .subscribe(() => {
                 this.devices = this.devices.filter(obj => obj.id !== this.deviceId);
                 this.dataSource.data = [...this.devices];

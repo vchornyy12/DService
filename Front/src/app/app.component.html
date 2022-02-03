@@ -1,19 +1,22 @@
 <div class="container">
   <div class="row my-0">
-    <div class="col-md-12">
       <div class="card bg-light my-sm-n1">
-        <div class="card-body" style="height: 10rem" >
-          <h2 class="card-title text-center text-black py-sm-1">{{ title }}</h2>
-          <ul class="text-center list-inline py-sm-1">
-            <li class="list-inline-item">
-              <a routerLink="/owners" class="btn btn-outline-success">Owners</a>
-            </li>
-            <li class="list-inline-item">
-              <a routerLink="/devices" class="btn btn-outline-success">Devices</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+          <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+            <a class="navbar-brand" href="#">Device Service</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/owners">Owners</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/devices">Devices</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
       <router-outlet></router-outlet>
     </div>
   </div>

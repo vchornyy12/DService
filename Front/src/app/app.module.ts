@@ -9,16 +9,22 @@ import {HttpClientModule} from "@angular/common/http";
 import {OwnerService} from "./owner/owner.service";
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgxPaginationModule} from 'ngx-pagination';
-import {SortDirective} from './directive/sort.directive';
-import {PageNotFoundComponent} from "../others/pageNotFound.component";
+import {PageNotFoundComponent} from "./others/pageNotFound.component";
+import { OwnerdetailComponent } from './ownerdetail/ownerdetail.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatTableModule} from "@angular/material/table";
+import { AppMaterialModule } from "./app.material-module";
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from "@angular/material/card";
+import {MatToolbarModule} from "@angular/material/toolbar";
 
 @NgModule({
     declarations: [
         AppComponent,
         DeviceComponent,
         OwnerComponent,
-        SortDirective,
-        PageNotFoundComponent
+        PageNotFoundComponent,
+        OwnerdetailComponent
     ],
     imports: [
         BrowserModule,
@@ -27,7 +33,13 @@ import {PageNotFoundComponent} from "../others/pageNotFound.component";
         FormsModule,
         ReactiveFormsModule,
         NgbModule,
-        NgxPaginationModule
+        NgxPaginationModule,
+        BrowserAnimationsModule,
+        MatTableModule,
+        AppMaterialModule,
+        MatButtonModule,
+        MatCardModule,
+        MatToolbarModule
     ],
     providers: [OwnerService],
     bootstrap: [AppComponent]

@@ -1,15 +1,14 @@
 package com.serve.dto;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
+@Data
 @Getter
 @Setter
-public class OwnerDTO {
+public class OwnerWithoutDevicesDTO {
     private Long id;
     private String firstName;
     private String lastName;
-    private List<DeviceWithoutOwnerDTO> devices;
 }

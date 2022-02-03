@@ -1,195 +1,234 @@
-<div class="border">
-    <button (click)="open(content)" class="btn btn-md btn-outline-success">
-        <i class="fa fa-user"></i>New Device
-    </button>
-</div>
-<div class="card my-5">
-    <div class="card-body">
-        <table class="table table-light table-striped table-hover">
-            <thead class="thead">
-            <tr>
-                <th scope="col" [appSort]="devices" data-order="desc" data-name="deviceType">
-                    DEVICE TYPE
-                </th>
-                <th scope="col" [appSort]="devices" data-order="desc" data-name="model">MODEL</th>
-                <th scope="col" [appSort]="devices" data-order="desc" data-name="code">SERIAL NUMBER</th>
-                <th scope="col" [appSort]="devices" data-order="desc" data-name="status">STATUS</th>
-                <th scope="col" [appSort]="devices" data-order="desc" data-name="model" class="text-end">ACTIONS</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let device of devices">
-                <td>{{ device.deviceType }}</td>
-                <td>{{ device.model }}</td>
-                <td>{{ device.code }}</td>
-                <td>{{ device.status }}</td>
-                <td class="text-end">
-                    <button (click)="openEdit(contentEdit, device)" class="btn btn-outline-primary btn-sm">Edit</button>
-                    &nbsp;|&nbsp;
-                    <button (click)="openDelete(contentDelete, device)" class="btn btn-outline-danger btn-sm">Delete
-                    </button>
-                </td>
-            </tr>
-            <tr *ngIf="devices && devices.length == 0">
-                <td colspan="5">No records found!</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-<ng-template #content let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Add Device</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <form [formGroup]="deviceForm" novalidate>
-            <div class="form-group">
-                <label>DEVICE TYPE</label>
-                <div class="input-group">
-                    <select class="custom-select" [formControl]="deviceType" formControlName="deviceType">
-                        <option value="">Choose device type</option>
-                        <option *ngFor="let deviceType of DeviceTypes"
-                                [ngValue]="" >{{deviceType.toString()}}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>MODEL</label>
-                <div class="input-group">
-                    <input required maxlength="30" formControlName="model" class="form-control">
-                </div>
-                <div class="col-md-5">
-                    <em *ngIf="validateControl('model') && hasError('model', 'required')">Model name is required</em>
-                    <em *ngIf="validateControl('model') && hasError('model', 'maxlength')">Maximum allowed length is 30
-                        characters.</em>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>SERIAL NUMBER</label>
-                <div class="input-group">
-                    <input formControlName="code" class="form-control">
-                </div>
-                    <em *ngIf="deviceForm.controls['code'].invalid">{{getDeviceCodeErrorMessage()}}</em>
-            </div>
-            <div class="form-group">
-                <label>STATUS</label>
-                <div class="input-group">
-                    <select class="custom-select" [formControl]="status" formControlName="status">
-                        <option value="">Choose device status</option>
-                        <option *ngFor="let status of Statuses"
-                                [ngValue]="">{{status.toString()}}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>OWNER</label>
-                <div class="input-group">
-                    <select class="custom-select" [formControl]="owner" formControlName="owner">
-                        <option value="">Choose device owner</option>
-                        <option *ngFor="let owner of Owners"
-                               value="" [ngValue]="owner">{{owner.firstName}} {{owner.lastName}}</option>
-                        <div *ngIf="owner.invalid && (owner.dirty || owner.touched)"
-                             class="alert alert-danger">
-                            <div *ngIf="owner.errors?.['required']">
-                                Owner is required.
-                            </div>
-                        </div>
-                    </select>
-                </div>
-            </div>
-        </form>
-    </div>
-    <div class="modal-body">
-
-        <div class="border text-center">
-            <button type="submit" [disabled]="!deviceForm.valid" data-dismiss="modal" class="btn btn-outline-success"
-                    (click)="onSubmit()">Add
+<div class="jumbotron">
+        <div class="border">
+            <button mat-raised-button (click)="open(content)">
+                Add Device
             </button>
-            <button type="button" class="btn btn-outline-dark" (click)="modal.close('Cancel click')">Cancel</button>
+        </div>
+        <mat-form-field appearance="standard">
+            <mat-label>Filter</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Ex. John" #input>
+        </mat-form-field>
+
+        <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
+
+                <ng-container matColumnDef="deviceType">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by deviceType">
+                        DEVICE TYPE
+                    </th>
+                    <td mat-cell *matCellDef="let device"> {{device.deviceType}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="model">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by model"> MODEL
+
+                    </th>
+                    <td mat-cell *matCellDef="let device"> {{device.model}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="code">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by code"> SERIAL
+                        NUMBER
+                    </th>
+                    <td mat-cell *matCellDef="let device"> {{device.code}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> STATUS
+                    </th>
+                    <td mat-cell *matCellDef="let device"> {{device.status}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="owner.firstName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header > OWNER
+                    </th>
+
+                    <td mat-cell *matCellDef="let device">
+                        <a routerLink="/owners/{{device.owner.id}}">{{device.owner.firstName.toString() + " " + device.owner.lastName.toString()}} </a>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef>
+                        ACTIONS
+                    </th>
+                    <td mat-cell *matCellDef="let device">
+                        <button mat-raised-button color="primary" (click)="openEdit(contentEdit, device)"> Edit</button>
+                        &nbsp;|&nbsp;
+                        <button mat-raised-button color="warn" (click)="openDelete(contentDelete, device)"> Delete
+                        </button>
+                        {{device.actions}} </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr *ngIf="devices && devices.length == 0">
+                    <td colspan="5">No records found!</td>
+                </tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
         </div>
     </div>
-</ng-template>
+    <ng-template #content let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Add Device</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="deviceForm" novalidate>
+                <div class="form-group">
+                    <label>DEVICE TYPE</label>
+                    <div class="input-group">
+                        <select class="custom-select" [formControl]="deviceType" formControlName="deviceType">
+                            <option value="">Choose device type</option>
+                            <option *ngFor="let deviceType of DeviceTypes"
+                                    [ngValue]="">{{deviceType.toString()}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>MODEL</label>
+                    <div class="input-group">
+                        <input required maxlength="30" formControlName="model" class="form-control">
+                    </div>
+                    <div class="col-md-5">
+                        <em *ngIf="validateControl('model') && hasError('model', 'required')">Model name is
+                            required</em>
+                        <em *ngIf="validateControl('model') && hasError('model', 'maxlength')">Maximum allowed length is
+                            30
+                            characters.</em>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>SERIAL NUMBER</label>
+                    <div class="input-group">
+                        <input formControlName="code" class="form-control">
+                    </div>
+                    <em *ngIf="deviceForm.controls['code'].invalid && deviceForm.controls['code'].touched">{{getDeviceCodeErrorMessage()}}</em>
+                </div>
+                <div class="form-group">
+                    <label>STATUS</label>
+                    <div class="input-group">
+                        <select class="custom-select" [formControl]="status" formControlName="status">
+                            <option value="">Choose device status</option>
+                            <option *ngFor="let status of Statuses"
+                                    [ngValue]="">{{status.toString()}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>OWNER</label>
+                    <div class="input-group">
+                        <select class="custom-select" [formControl]="owner" formControlName="owner">
+                            <option value="owner">Choose device owner</option>
+                            <option *ngFor="let owner of Owners"
+                                    value="owner" [ngValue]="owner">{{owner.firstName}} {{owner.lastName}}</option>
+                            <div *ngIf="owner.invalid && (owner.dirty || owner.touched)"
+                                 class="alert alert-danger">
+                                <div *ngIf="owner.errors?.['required']">
+                                    <em>
+                                    Owner is required!
+                                    </em>
+                                </div>
+                            </div>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-body">
 
-<ng-template #contentEdit let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title2">Edit device's data</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <form [formGroup]="deviceForm" novalidate>
-            <div class="form-group">
-                <label>DEVICE TYPE</label>
-                <div class="input-group">
-                    <select class="custom-select" [formControl]="deviceType" formControlName="deviceType">
-                        <option value="bold">Edit device type</option>
-                        <option *ngFor="let deviceType of DeviceTypes"
-                                [ngValue]="deviceType.toString()">{{deviceType.toString()}}</option>
-                    </select>
-                    <!--                <input required minlength="2" maxlength="10" formControlName="deviceType" class="form-control">-->
-                </div>
-            </div>
-            <div class="form-group">
-                <label>MODEL</label>
-                <div class="input-group">
-                    <input required minlength="3" maxlength="30" formControlName="model" class="form-control">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>SERIAL NUMBER</label>
-                <div class="input-group">
-                    <input formControlName="code" class="form-control">
-                </div>
-                <em *ngIf="deviceForm.controls['code'].invalid">{{getDeviceCodeErrorMessage()}}</em>
-            </div>
-            <div class="form-group">
-                <label>STATUS</label>
-                <div class="input-group">
-                    <select class="custom-select" [formControl]="status" formControlName="status">
-                        <option value="">Edit device status</option>
-                        <option *ngFor="let status of Statuses"
-                                [ngValue]="status.toString()">{{status.toString()}}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>OWNER</label>
-                <div class="input-group">
-                    <select class="custom-select" [formControl]="owner" formControlName="owner">
-                        <option value="">Edit device owner</option>
-                        <option *ngFor="let owner of Owners"
-                                [ngValue]="owner">{{owner.firstName}} {{owner.lastName}}</option>
-                    </select>
-                </div>
-            </div>
             <div class="border text-center">
-                <button data-dismiss="modal" class="btn btn-outline-success" (click)="onSave()"
-                        [disabled]="!deviceForm.valid||deviceForm.controls['code'].invalid">
-                    Save Changes
+                <button mat-raised-button color="accent" class="btn1" [disabled]="!deviceForm.valid"
+                        data-dismiss="modal"
+                        (click)="onSubmit()">Add
                 </button>
-                <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Cancel</button>
+                <button mat-raised-button (click)="modal.close('Cancel click')">Cancel</button>
             </div>
-        </form>
-    </div>
-</ng-template>
-
-<ng-template #contentDelete let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title">Confirm Delete</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <h5 class="alert-danger">Are you sure to delete the device?</h5>
-        <div class="border text-center">
-            <button data-dismiss="modal" class="btn btn-danger" (click)="onDelete()">Yes</button>
-            <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Cancel</button>
         </div>
-    </div>
-</ng-template>
+    </ng-template>
 
+    <ng-template #contentEdit let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title2">Edit device's data</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="deviceForm" novalidate>
+                <div class="form-group">
+                    <label>DEVICE TYPE</label>
+                    <div class="input-group">
+                        <select class="custom-select" [formControl]="deviceType" formControlName="deviceType">
+                            <option value="bold">Edit device type</option>
+                            <option *ngFor="let deviceType of DeviceTypes"
+                                    [ngValue]="deviceType.toString()">{{deviceType.toString()}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>MODEL</label>
+                    <div class="input-group">
+                        <input required minlength="3" maxlength="30" formControlName="model" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>SERIAL NUMBER</label>
+                    <div class="input-group">
+                        <input formControlName="code" class="form-control">
+                    </div>
+                    <em *ngIf="deviceForm.controls['code'].invalid">{{getDeviceCodeErrorMessage()}}</em>
+                </div>
+                <div class="form-group">
+                    <label>STATUS</label>
+                    <div class="input-group">
+                        <select class="custom-select" [formControl]="status" formControlName="status">
+                            <option value="">Edit device status</option>
+                            <option *ngFor="let status of Statuses"
+                                    [ngValue]="status.toString()">{{status.toString()}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>OWNER</label>
+                    <div class="input-group">
+                        <select class="custom-select" [formControl]="owner" formControlName="owner">
+                            <option value="">Edit device owner</option>
+                            <option *ngFor="let owner of Owners"
+                                    [ngValue]="owner">{{owner.firstName}} {{owner.lastName}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="border text-center">
+                    <button mat-raised-button color="accent" class="btn1" (click)="onSave()"
+                            [disabled]="!deviceForm.valid||deviceForm.controls['code'].invalid">
+                        Save Changes
+                    </button>
+                    <button mat-raised-button class="btn1" (click)="modal.close('Save click')">Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </ng-template>
+
+    <ng-template #contentDelete let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">Confirm Delete</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <h5 class="alert-danger">Are you sure to delete the device?</h5>
+            <div class="border text-center">
+                <button mat-raised-button color="warn" class="btn1" (click)="onDelete()">Yes</button>
+                <button mat-raised-button (click)="modal.close('Save click')">Cancel</button>
+            </div>
+        </div>
+    </ng-template>

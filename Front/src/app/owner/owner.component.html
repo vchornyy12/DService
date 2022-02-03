@@ -1,52 +1,61 @@
-<div class="border">
-    <button (click)="open(content)" class="btn btn-md btn-outline-success">
-        <i class="fa fa-user"></i>New Owner
-    </button>
-</div>
-<div class="card my-5">
-    <div class="card-body">
-        <table class="table table-light table-striped table-hover">
-            <thead class="thead">
-            <tr>
-                <th scope="col" [appSort]="owners" data-order="desc" data-name="firstName">FIRST NAME</th>
-                <th scope="col" [appSort]="owners" data-order="desc" data-name="lastName">LAST NAME</th>
-                <th scope="col" [appSort]="owners" data-order="desc" data-name="lastName" class="text-end">ACTIONS</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let owner of owners">
-                <td>{{ owner.firstName }}</td>
-                <td>{{ owner.lastName }}</td>
-                <td class="text-end">
-                    <button (click)="openEdit(contentEdit, owner)" class="btn btn-outline-primary btn-sm">Edit</button>
+<div class="jumbotron">
+    <div class="border">
+        <button mat-raised-button (click)="open(content)">
+            Add Owner
+        </button>
+    </div>
+    <mat-form-field appearance="standard">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. John" #input>
+    </mat-form-field>
+    <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
+
+            <ng-container matColumnDef="firstName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by firstName"> FIRST
+                    NAME
+                </th>
+                <td mat-cell *matCellDef="let element"> {{element.firstName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by lastName"> LAST
+                    NAME
+                </th>
+                <td mat-cell *matCellDef="let element"> {{element.lastName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions" >
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> ACTIONS</th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-raised-button color="primary" (click)="openEdit(contentEdit, element)"> Edit </button>
                     &nbsp;|&nbsp;
-                    <button (click)="openDelete(contentDelete, owner)" class="btn btn-outline-danger btn-sm">Delete
-                    </button>
-                </td>
+                    <button mat-raised-button color="warn" (click)="openDelete(contentDelete, element)"> Delete </button>
+                    {{element.actions}} </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
             </tr>
-            <tr *ngIf="owners && owners.length == 0">
-                <em>
-                    <td colspan="5">No records found!</td>
-                </em>
-                
-            </tr>
-            </tbody>
         </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
     </div>
 </div>
 <ng-template #content let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Add Owner</h4>
+        <h4 class="modal-title">Add Owner</h4>
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
-        <form [formGroup]="ownerForm" novalidate>
+        <mat-form [formGroup]="ownerForm" novalidate>
             <div class="form-group">
                 <label>FIRST NAME</label>
                 <div class="input-group">
-                    <input formControlName="firstName" class="form-control">
+                    <input formControlName="firstName" class="form-control" required maxlength="31">
                 </div>
                 <div class="col-md-5">
                     <em *ngIf="validateControl('firstName') && hasError('firstName', 'required')">First Name is
@@ -58,7 +67,7 @@
             <div class="form-group">
                 <label>LAST NAME</label>
                 <div class="input-group">
-                    <input formControlName="lastName" class="form-control">
+                    <input formControlName="lastName" class="form-control" required maxlength="31">
                 </div>
                 <div class="col-md-5">
                     <em *ngIf="validateControl('lastName') && hasError('lastName', 'required')">Last Name is
@@ -67,32 +76,32 @@
                         is 30 characters.</em>
                 </div>
             </div>
-        </form>
+        </mat-form>
     </div>
     <div class="modal-body">
 
         <div class="border text-center">
-            <button type="submit" [disabled]="!ownerForm.valid" data-dismiss="modal" class="btn btn-outline-success"
+            <button mat-raised-button color="accent" class="btn1" data-dismiss="modal" [disabled]="!ownerForm.valid"
                     (click)="onSubmit()">Add
             </button>
-            <button type="button" class="btn btn-outline-dark" (click)="modal.close('Cancel click')">Cancel</button>
+            <button mat-raised-button (click)="modal.close('Cancel click')">Cancel</button>
         </div>
     </div>
 </ng-template>
 
 <ng-template #contentEdit let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title2">Update Owner's Data</h4>
+        <h4 class="modal-title">Update Owner's Data</h4>
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
-        <form [formGroup]="ownerForm" novalidate>
+        <mat-form [formGroup]="ownerForm" novalidate>
             <div class="form-group">
                 <label>FIRST NAME</label>
                 <div class="input-group">
-                    <input formControlName="firstName" class="form-control">
+                    <input formControlName="firstName" class="form-control" required maxlength="31">
                 </div>
                 <div class="col-md-5">
                     <em *ngIf="validateControl('firstName') && hasError('firstName', 'required')">First Name is
@@ -104,7 +113,7 @@
             <div class="form-group">
                 <label>LAST NAME</label>
                 <div class="input-group">
-                    <input formControlName="lastName" class="form-control">
+                    <input formControlName="lastName" class="form-control" required maxlength="31">
                 </div>
                 <div class="col-md-5">
                     <em *ngIf="validateControl('lastName') && hasError('lastName', 'required')">Last Name is
@@ -114,13 +123,13 @@
                 </div>
             </div>
             <div class="border text-center">
-                <button data-dismiss="modal" class="btn btn-outline-success" (click)="onSave()"
+                <button mat-raised-button color="accent" class="btn1" data-dismiss="modal" (click)="onSave()"
                         [disabled]="!ownerForm.valid">
                     Save Changes
                 </button>
-                <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Cancel</button>
+                <button mat-raised-button (click)="modal.close('Save click')">Cancel</button>
             </div>
-        </form>
+        </mat-form>
     </div>
 </ng-template>
 
@@ -132,10 +141,10 @@
         </button>
     </div>
     <div class="modal-body">
-        <h5 class="alert-danger">Are you sure to delete the owner with all its devices?</h5>
-        <div class="border text-center">
-            <button data-dismiss="modal" class="btn btn-danger" (click)="onDelete()">Yes</button>
-            <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Cancel</button>
+        <h5 class="alert-danger">By deleting this owner you delete all its devices too!</h5>
+        <div  class="border text-center">
+            <button mat-raised-button color="warn" class="btn1"  data-dismiss="modal" (click)="onDelete()">Yes</button>
+            <button mat-raised-button (click)="modal.close('Save click')">Cancel</button>
         </div>
     </div>
 </ng-template>
