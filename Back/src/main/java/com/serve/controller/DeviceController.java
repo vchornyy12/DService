@@ -23,8 +23,7 @@ public class DeviceController {
 
     @PostMapping()
     public ResponseEntity<?> create(@RequestBody DeviceDTO deviceDTO) {
-        DeviceDTO deviceDTO1 = deviceService.create(deviceDTO);
-        return ResponseEntity.ok().body(deviceDTO1);
+        return ResponseEntity.ok().body(deviceService.create(deviceDTO));
     }
 
 

@@ -31,7 +31,6 @@ public class OwnerController {
     }
 
 
-    @CrossOrigin
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody OwnerDTO ownerDTO) {
         ownerService.update(ownerDTO);
@@ -39,7 +38,6 @@ public class OwnerController {
     }
 
 
-    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         ownerService.delete(id);

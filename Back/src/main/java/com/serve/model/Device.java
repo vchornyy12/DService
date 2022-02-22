@@ -2,6 +2,7 @@
 package com.serve.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.serve.model.enums.DeviceType;
 import com.serve.model.enums.Status;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class Device {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @CreationTimestamp
-    @Column(name = "register_date", nullable = false)
+    @Column(name = "register_date", nullable = false, updatable = false)
     private LocalDateTime registerDate;
 
     @Enumerated(value = EnumType.STRING)
@@ -33,7 +34,7 @@ public class Device {
     @Column(name = "model", length = 30)
     private String model;
 
-    @Column(name = "device_code", length = 30)
+    @Column(name = "device_code", length = 30, unique = true, nullable = false)
     private String code;
 
     @Enumerated(value = EnumType.STRING)
@@ -41,6 +42,7 @@ public class Device {
     private Status status;
 
     // TODO Avoid FetchType.EAGER
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private Owner owner;
