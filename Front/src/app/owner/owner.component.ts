@@ -32,7 +32,7 @@ export class OwnerComponent implements OnInit, AfterViewInit {
                 private fb: FormBuilder, private httpClient: HttpClient, private _liveAnnouncer: LiveAnnouncer) {
     }
 
-    ngOnInit(): void {
+   public ngOnInit(): void {
         this.getAllOwners();
         this.ownerForm = this.fb.group({
             id: [''],
@@ -41,12 +41,12 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         })
     }
 
-    ngAfterViewInit(): void {
+   public ngAfterViewInit(): void {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
     }
 
-    applyFilter(event: Event): void {
+  public applyFilter(event: Event): void {
         const filterValue = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();
 
@@ -55,7 +55,7 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         }
     }
 
-    announceSortChange(sortState: Sort): void {
+   public announceSortChange(sortState: Sort): void {
 
         if (sortState.direction) {
             this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);

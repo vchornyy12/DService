@@ -42,7 +42,6 @@ public class Device {
     private Status status;
 
     // TODO Avoid FetchType.EAGER
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private Owner owner;

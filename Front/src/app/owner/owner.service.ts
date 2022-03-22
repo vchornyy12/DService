@@ -20,6 +20,9 @@ export class OwnerService {
   public createOwner(owner: Owner) {
     return this.http.post<Owner>(this.ownersUrl, owner);
   }
+  public getOwner(id: number) {
+    return this.http.get<Owner>(this.ownersUrl + "/" + id)
+  }
 }
 
 
