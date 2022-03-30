@@ -1,4 +1,4 @@
-// TODO format this class / optimize imports
+
 package com.serve.service;
 
 import com.serve.dao.DeviceDAO;
@@ -26,9 +26,6 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    // TODO why do you need a transaction here?
-
-    // TODO why not importing the class?
     @Transactional(readOnly = true)
     public DeviceDTO get(Long id) {
         return DeviceMapper.INSTANCE.toDto(deviceDAO.get(id));
@@ -37,22 +34,18 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     @Transactional
     public DeviceDTO update(DeviceDTO deviceDTO) {
-        // TODO the line above could be returned
         return DeviceMapper.INSTANCE.toDto(deviceDAO.update(DeviceMapper.INSTANCE.toEntity(deviceDTO)));
     }
 
     @Override
     @Transactional
     public boolean delete(Long id) {
-        // TODO the line above could be returned
         return deviceDAO.delete(id);
     }
 
     @Override
-    // TODO why do you need a transaction here?
     @Transactional(readOnly = true)
     public List<DeviceDTO> getAll() {
-
         return deviceDAO.getAll().stream().map(DeviceMapper.INSTANCE::toDto).collect(Collectors.toList());
     }
 

@@ -1,4 +1,4 @@
-// TODO format this class / optimize imports
+
 package com.serve.dao;
 
 import org.hibernate.Session;
@@ -13,15 +13,15 @@ import java.util.List;
 
 @Repository
 public abstract class BaseCrudDAOImpl<T> implements BaseCrudDAO<T> {
-    // TODO Use constructor injection instead
+
 
     protected final SessionFactory sessionFactory;
 
-    // TODO Initialize this field in a constructor, no need to create 3 class variables
+
     Class<T> classType;
 
-    @SuppressWarnings("unchecked")
-    public BaseCrudDAOImpl(SessionFactory sessionFactory) {
+
+    protected BaseCrudDAOImpl(SessionFactory sessionFactory) {
         this.classType = (Class<T>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
         this.sessionFactory = sessionFactory;
@@ -38,7 +38,7 @@ public abstract class BaseCrudDAOImpl<T> implements BaseCrudDAO<T> {
         return sessionFactory.getCurrentSession().get(classType, id);
     }
 
-    // TODO why using Override only here? Be consistent!
+
     @Override
     public T update(T t) {
         sessionFactory.getCurrentSession().saveOrUpdate(t);
@@ -47,7 +47,7 @@ public abstract class BaseCrudDAOImpl<T> implements BaseCrudDAO<T> {
 
     @Override
     public boolean delete(Long id) {
-        // TODO Rename "t" which hides the field declared at line 21.
+
         T entity = sessionFactory.getCurrentSession().get(classType, id);
         sessionFactory.getCurrentSession().delete(entity);
         return true;
@@ -62,4 +62,5 @@ public abstract class BaseCrudDAOImpl<T> implements BaseCrudDAO<T> {
         cq.select(root);
         return session.createQuery(cq).getResultList();
     }
+
 }
