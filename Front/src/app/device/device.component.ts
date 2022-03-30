@@ -31,8 +31,7 @@ export function uniqueValidator(): ValidatorFn {
     templateUrl: './device.component.html',
     styleUrls: ['./device.component.css']
 })
-export class DeviceComponent implements OnInit, AfterViewInit {
-
+export class DeviceComponent implements OnInit, AfterViewInit{
     public devices: Device[] = [];
     closeResult: string | undefined;
     deviceForm!: FormGroup;

@@ -1,7 +1,8 @@
 <div class="jumbotron">
+    <div class="container">
         <div class="border">
             <button mat-raised-button (click)="open(content)">
-                Add Device
+                New Device
             </button>
         </div>
         <mat-form-field appearance="standard">
@@ -34,22 +35,22 @@
                 </ng-container>
 
                 <ng-container matColumnDef="status">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> STATUS
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by status"> STATUS
                     </th>
                     <td mat-cell *matCellDef="let device"> {{device.status}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="owner.firstName">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header > OWNER
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by owner"> OWNER
                     </th>
 
-                    <td mat-cell *matCellDef="let device">
-                        <a routerLink="/owners/{{device.owner.id}}">{{device.owner.firstName.toString() + " " + device.owner.lastName.toString()}} </a>
+                    <td mat-cell *matCellDef="let device"><a
+                            routerLink="/owners/{{device.owner.id}}">{{ device.owner.firstName.toString()}} {{ device.owner.lastName.toString()}} </a>
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="action">
-                    <th mat-header-cell *matHeaderCellDef>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by actions">
                         ACTIONS
                     </th>
                     <td mat-cell *matCellDef="let device">
@@ -109,7 +110,7 @@
                     <div class="input-group">
                         <input formControlName="code" class="form-control">
                     </div>
-                    <em *ngIf="deviceForm.controls['code'].invalid && deviceForm.controls['code'].touched">{{getDeviceCodeErrorMessage()}}</em>
+                    <em *ngIf="deviceForm.controls['code'].invalid">{{getDeviceCodeErrorMessage()}}</em>
                 </div>
                 <div class="form-group">
                     <label>STATUS</label>
@@ -125,15 +126,13 @@
                     <label>OWNER</label>
                     <div class="input-group">
                         <select class="custom-select" [formControl]="owner" formControlName="owner">
-                            <option value="owner">Choose device owner</option>
+                            <option value="">Choose device owner</option>
                             <option *ngFor="let owner of Owners"
-                                    value="owner" [ngValue]="owner">{{owner.firstName}} {{owner.lastName}}</option>
+                                    value="" [ngValue]="owner">{{owner.firstName}} {{owner.lastName}}</option>
                             <div *ngIf="owner.invalid && (owner.dirty || owner.touched)"
                                  class="alert alert-danger">
                                 <div *ngIf="owner.errors?.['required']">
-                                    <em>
-                                    Owner is required!
-                                    </em>
+                                    Owner is required.
                                 </div>
                             </div>
                         </select>
@@ -232,3 +231,4 @@
             </div>
         </div>
     </ng-template>
+</div>

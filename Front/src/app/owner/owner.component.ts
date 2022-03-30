@@ -32,7 +32,7 @@ export class OwnerComponent implements OnInit, AfterViewInit {
                 private fb: FormBuilder, private httpClient: HttpClient, private _liveAnnouncer: LiveAnnouncer) {
     }
 
-   public ngOnInit(): void {
+    ngOnInit(): void {
         this.getAllOwners();
         this.ownerForm = this.fb.group({
             id: [''],
@@ -41,12 +41,12 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         })
     }
 
-   public ngAfterViewInit(): void {
+    ngAfterViewInit() {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
     }
 
-  public applyFilter(event: Event): void {
+    applyFilter(event: Event) {
         const filterValue = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();
 
@@ -55,8 +55,11 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         }
     }
 
-   public announceSortChange(sortState: Sort): void {
-
+    announceSortChange(sortState: Sort) {
+        // This example uses English messages. If your application supports
+        // multiple language, you would internationalize these strings.
+        // Furthermore, you can customize the message to add additional
+        // details about the values being sorted.
         if (sortState.direction) {
             this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
         } else {
@@ -64,7 +67,7 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         }
     }
 
-    public getAllOwners(): void {
+    public getAllOwners() {
         this.ownerService.getAllOwners().subscribe(data => {
                 this.owners = data;
                 this.dataSource.data = data;
@@ -81,7 +84,7 @@ export class OwnerComponent implements OnInit, AfterViewInit {
     }
 
 
-    public open(content: any): void {
+    public open(content: any) {
         this.ownerForm.reset();
         this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
             this.closeResult = `Closed with: ${result}`;
@@ -91,7 +94,7 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         });
     }
 
-    public getDismissReason(reason: unknown): string {
+    public getDismissReason(reason: any): string {
         if (reason === ModalDismissReasons.ESC) {
             return 'by pressing ESC';
         } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
@@ -101,7 +104,7 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         }
     }
 
-    public onSubmit(): void {
+    public onSubmit() {
         this.ownerService.createOwner(this.ownerForm.value)
             .subscribe((result) => {
                 this.owners.push(result);
@@ -111,7 +114,7 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         this.modalService.dismissAll();
     }
 
-    public openModal(targetModal: any, owner: Owner): void {
+    public openModal(targetModal: any, owner: Owner) {
         this.ownerId = owner.id;
         this.modalService.open(targetModal, {
             backdrop: 'static',
@@ -119,7 +122,7 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         });
     }
 
-    public openEdit(targetModal: any, owner: Owner): void {
+    public openEdit(targetModal: any, owner: Owner) {
         this.ownerId = owner.id;
         this.modalService.open(targetModal, {
             backdrop: 'static',
@@ -132,10 +135,10 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         });
     }
 
-    public onSave(): void {
+    public onSave() {
         const editURL = this.ownersUrl + this.ownerId;
         this.httpClient.put(editURL, this.ownerForm.value)
-            .subscribe(() => {
+            .subscribe((result) => {
                 this.getAllOwners();
                 this.ownerForm.reset();
                 this.dataSource.data = [...this.dataSource.data];
@@ -143,7 +146,7 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         this.modalService.dismissAll();
     }
 
-    public openDelete(targetModal: any, owner: Owner): void {
+    public openDelete(targetModal: any, owner: Owner) {
         this.ownerId = owner.id;
         this.modalService.open(targetModal, {
             backdrop: 'static',
@@ -151,7 +154,7 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         });
     }
 
-    public onDelete(): void {
+    public onDelete() {
         const deleteURL = this.ownersUrl + this.ownerId;
         this.httpClient.delete(deleteURL)
             .subscribe(() => {
