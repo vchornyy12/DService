@@ -1,6 +1,5 @@
 package com.serve.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.serve.model.enums.DeviceType;
 import com.serve.model.enums.Status;
 import lombok.Data;
@@ -17,6 +16,5 @@ public class DeviceDTO {
     private String model;
     private String code;
     private Status status;
-    @JsonIgnore
     private OwnerWithoutDevicesDTO owner;
 }

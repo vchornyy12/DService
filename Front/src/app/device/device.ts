@@ -1,10 +1,10 @@
 import {Owner} from "../owner/owner";
 
 export class Device {
-  id!: number;
-  deviceType!: string;
-  model!: string;
-  code!: string;
-  status!: string;
+  id: number | undefined;
+  deviceType: string| undefined;
+  model: string | undefined;
+  code: string | undefined;
+  status: string| undefined;
   owner!: Owner;
 }
